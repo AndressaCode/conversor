@@ -31,6 +31,11 @@ void main() async {
   ));
 }
 
+Future<Map> getData() async {
+  http.Response response = await http.get(Uri.parse(request));
+  return json.decode(response.body);
+}
+
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
 
@@ -83,26 +88,21 @@ class _HomeState extends State<Home> {
                 dolar = snapshot.data!["results"]["currencies"]["USD"]["buy"];
                 euro = snapshot.data!["results"]["currencies"]["EUR"]["buy"];
                 return SingleChildScrollView(
+                  padding: const EdgeInsets.all(10.0),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: const [
-                      Icon(
+                    children: [
+                      const Icon(
                         Icons.monetization_on,
-                        size: 50.0,
+                        size: 100.0,
                         color: Colors.amber,
                       ),
-                      TextField(
-                        decoration: InputDecoration(
-                          labelText: 'Reais',
-                          labelStyle: TextStyle(color: Colors.amber),
-                          border: OutlineInputBorder(),
-                          prefixText: 'R\$'
-                        ),
-                        style: TextStyle(
-                          color: Colors.amber,
-                          fontSize: 25.0
-                        ),
-                      ),
+                      buildTextField('Reais', 'R\$'),
+                      const Divider(),
+                      buildTextField('Dolares', 'US\$'),
+                      const Divider(),
+                      buildTextField('Euros', '€'),
+                      const Divider(),
                     ],
                   ),
                 );
@@ -114,7 +114,17 @@ class _HomeState extends State<Home> {
   }
 }
 
-Future<Map> getData() async {
-  http.Response response = await http.get(Uri.parse(request));
-  return json.decode(response.body);
+Widget buildTextField(String label, String prefix){
+  return TextField(
+    decoration: InputDecoration(
+        labelText: label,
+        labelStyle: const TextStyle(color: Colors.amber),
+        border: const OutlineInputBorder(),
+        prefixText: prefix
+    ),
+    style: const TextStyle(
+        color: Colors.amber,
+        fontSize: 25.0
+    ),
+  );
 }
